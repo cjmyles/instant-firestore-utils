@@ -9,6 +9,7 @@ _**Please note:** This is an unofficial Firestore package, designed to assist wi
 - Assign document id
 - Serialize references
 - Serialize Firestore document
+- Serialize Firestore snapshot
 
 ## Installation
 

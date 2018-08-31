@@ -1,4 +1,4 @@
-import { asyncForEach } from 'instant-utils';
+import { asyncForEach, asyncMap } from 'instant-utils';
 
 /**
  * Get document data and assign an id (prevents overriding the `id` field in the data if one exists)
@@ -76,6 +76,25 @@ export async function serializeDocument(doc, options = {}) {
 
       return data;
     }
+  } catch (error) {
+    throw error;
+  }
+}
+
+/**
+ * Serialize a Firestore snapshot
+ * @param {object} snapshot Firestore snapshot
+ * @param {object} options Options
+ */
+export async function serializeSnapshot(snapshot, options = {}) {
+  try {
+    let data = [];
+    if (snapshot && !snapshot.empty) {
+      data = await asyncMap(snapshot.docs, doc =>
+        serializeDocument(doc, options)
+      );
+    }
+    return data;
   } catch (error) {
     throw error;
   }
