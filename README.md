@@ -7,9 +7,9 @@ _**Please note:** This is an unofficial Firestore package, designed to assist wi
 ## Features
 
 - Assign document id
-- Serialize references
-- Serialize Firestore document
-- Serialize Firestore snapshot
+- Serialize Firestore Document references
+- Serialize Firestore Document
+- Serialize Firestore Snapshot
 
 ## Installation
 
@@ -34,8 +34,22 @@ import { serializeDocument } from 'instant-firestore-utils';
 ```javascript
 const utils = require('instant-firestore-utils');
 
-// Do stuff with serializeDocument or any of the other Utils you import
+// Do stuff with utils
 ```
+
+## Functions
+
+### `getDocumentData`
+
+Returns a serialized version of a `Firestore Document` with an assigned `id`.
+
+#### Arguments
+
+`doc` (`Firestore Document`): The Firestore Document
+
+#### Returns
+
+`object` Serialized document data with id
 
 ## Running Tests
 
