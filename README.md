@@ -57,7 +57,7 @@ To run the tests, clone the repository and install the dependencies:
 
 ```bash
 git clone https://github.com/JSJInvestments/instant-firestore-utils.git
-cd instant-utils && npm i
+cd instant-firestore-utils && npm i
 npm run test
 ```
 
