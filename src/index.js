@@ -42,8 +42,22 @@ export async function populateReference(data, key, path, references = {}) {
  */
 export async function populateSubcollection(data, key, paths, docRef) {
   try {
+    data[key] = await getSubcollection(docRef, key);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+/**
+ * Get a document's subcollection
+ * @param {object} docRef Firestore Document Reference
+ * @param {string} key Collection name
+ */
+export async function getSubcollection(docRef, key) {
+  try {
     const snapshot = await docRef.collection(key).get();
-    data[key] = await serializeSnapshot(snapshot);
+    return await serializeSnapshot(snapshot);
   } catch (error) {
     console.error(error);
     throw error;
