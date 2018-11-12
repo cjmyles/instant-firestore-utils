@@ -1,6 +1,41 @@
 import { asyncForEach, asyncMap } from 'instant-utils';
 
 /**
+ * Deserialize path
+ * @param {object} data Document data
+ * @param {string} path Path to populate
+ */
+export async function deserializePath(data, path, db) {
+  try {
+    data[path] =
+      typeof data[path] === 'string' && data[path].indexOf('/') !== -1
+        ? db.doc(data[path])
+        : data[path];
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+/**
+ * Deserialize paths
+ * @param {object} data Document data
+ * @param {string|array} paths Paths to populate
+ */
+export async function deserialize(data, paths, db) {
+  try {
+    if (Array.isArray(paths)) {
+      await asyncForEach(paths, path => deserializePath(data, path, db));
+    } else {
+      await deserializePath(data, paths, db);
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+/**
  * Populate a reference (user specified)
  * Could be a Firestore Document Reference or a Subcollection (or might not exist)
  * @param {object} data Serialized document data
@@ -43,21 +78,6 @@ export async function populateReference(data, key, path, references = {}) {
 export async function populateSubcollection(data, key, paths, docRef) {
   try {
     data[key] = await getSubcollection(docRef, key);
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-
-/**
- * Get a document's subcollection
- * @param {object} docRef Firestore Document Reference
- * @param {string} key Collection name
- */
-export async function getSubcollection(docRef, key) {
-  try {
-    const snapshot = await docRef.collection(key).get();
-    return await serializeSnapshot(snapshot);
   } catch (error) {
     console.error(error);
     throw error;
@@ -182,10 +202,25 @@ export async function getDocument(docRef, options) {
  */
 export async function getCollection(colRef, options) {
   try {
-    const snapshot = colRef.get();
+    const snapshot = await colRef.get();
     return await serializeSnapshot(snapshot, options);
   } catch (error) {
     console.log(error);
+    throw error;
+  }
+}
+
+/**
+ * Get a document's subcollection
+ * @param {object} docRef Firestore Document Reference
+ * @param {string} key Collection name
+ */
+export async function getSubcollection(docRef, key) {
+  try {
+    const snapshot = await docRef.collection(key).get();
+    return await serializeSnapshot(snapshot);
+  } catch (error) {
+    console.error(error);
     throw error;
   }
 }
