@@ -1,7 +1,7 @@
 {
   "name": "instant-firestore-utils",
-  "version": "0.0.6",
-  "description": "Utility Firestore methods",
+  "version": "1.0.0",
+  "description": "Lightweight Firebase Firestore utility library.",
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha --require babel-core/register --require babel-polyfill",
@@ -11,12 +11,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JSJInvestments/instant-firestore-utils.git"
+    "url": "git+https://github.com/cjmyles/instant-firestore-utils.git"
   },
   "keywords": [
     "javascript"
   ],
-  "author": "Craig Myles (https://instantfeedback.com.au)",
+  "author": "Craig Myles",
   "license": "MIT",
   "dependencies": {
     "instant-utils": "0.0.1"

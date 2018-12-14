@@ -1,19 +1,22 @@
-# Instant Firestore Utils
+# Instant Utils
 
-Firestore helper methods.
+Lightweight utility library to assist other `instant` packages.
 
-_**Please note:** This is an unofficial Firestore package, designed to assist with common Firestore tasks_
+## Table of Contents
 
-## Features
-
-- Assign document id
-- Serialize Firestore Document references
-- Serialize Firestore Document
-- Serialize Firestore Snapshot
+- [Installation](#installation)
+- [Usage](#usage)
+- [API](#api)
+  - [Async For Each](#async-for-each)
+  - [Async Map](#async-map)
+  - [Pick](#pick)
+  - [Remove Undefineds](#removeUndefineds)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Installation
 
-You can install this wrapper by running the following in your project:
+You can install this package using npm:
 
 ```bash
 $ npm install instant-firestore-utils
@@ -21,45 +24,56 @@ $ npm install instant-firestore-utils
 
 ## Usage
 
+Here is a quick example to get you started:
+
 **ES Modules**
 
 ```javascript
-import { serializeDocument } from 'instant-firestore-utils';
+import { getDocument } from 'instant-firestore-utils';
 
-// Do stuff with serializeDocument or any of the other Utils you import
+const test = async () => {
+  const doc = await getDocument(db.collection('countries')); // Assumes db is a Firebase Firestore reference
+  console.log(doc);
+};
 ```
 
 **CommonJS Modules**
 
 ```javascript
-const utils = require('instant-firestore-utils');
+var getDocument = require('instant-firestore-utils').getDocument;
 
-// Do stuff with utils
+getDocument(db.collection('countries')).then(function(doc) {
+  console.log(doc);
+});
 ```
 
-## Functions
+## API
 
-### `getDocumentData`
+### getDocument
 
-Returns a serialized version of a `Firestore Document` with an assigned `id`.
+### getCollection
 
-#### Arguments
+### getSubCollection
 
-`doc` (`Firestore Document`): The Firestore Document
+### serializeDocument
 
-#### Returns
+### serializeSnapshot
 
-`object` Serialized document data with id
+### populate
 
-## Running Tests
+### populateReference
 
-To run the tests, clone the repository and install the dependencies:
+### populatePath
 
-```bash
-git clone https://github.com/JSJInvestments/instant-firestore-utils.git
-cd instant-firestore-utils && npm i
-npm run test
-```
+### populateSubcollection
+
+### deserialize
+
+### deserializePath
+
+## Contributing
+
+We'd greatly appreciate any [contribution](CONTRIBUTING.md) you make.
 
 ## License
 
