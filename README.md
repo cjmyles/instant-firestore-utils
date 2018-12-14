@@ -1,4 +1,4 @@
-# Instant Utils
+# Instant Firestore Utils
 
 Lightweight utility library to assist other `instant` packages.
 
