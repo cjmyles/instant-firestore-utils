@@ -1,6 +1,6 @@
 # Instant Firestore Utils
 
-Lightweight Firestore utility library.
+Lightweight Firebase Firestore utility library.
 
 ## Table of Contents
 
