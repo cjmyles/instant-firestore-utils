@@ -1,6 +1,6 @@
 {
   "name": "instant-firestore-utils",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Lightweight Firebase Firestore utility library.",
   "main": "lib/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "url": "git+https://github.com/cjmyles/instant-firestore-utils.git"
   },
   "keywords": [
-    "javascript"
+    "firestore"
   ],
   "author": "Craig Myles",
   "license": "MIT",
