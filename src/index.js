@@ -1,34 +1,28 @@
 import { asyncForEach, asyncMap } from 'instant-utils';
 
 /**
- * Deserialize path
+ * Remove unpopulated references
  * @param {object} data Document data
- * @param {string} path Path to populate
  */
-export async function deserializePath(data, path, db) {
+export function removeUnpopulatedReferences(data) {
   try {
-    data[path] =
-      typeof data[path] === 'string' && data[path].indexOf('/') !== -1
-        ? db.doc(data[path])
-        : data[path];
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-
-/**
- * Deserialize paths
- * @param {object} data Document data
- * @param {string|array} paths Paths to populate
- */
-export async function deserialize(data, paths, db) {
-  try {
-    if (Array.isArray(paths)) {
-      await asyncForEach(paths, path => deserializePath(data, path, db));
-    } else {
-      await deserializePath(data, paths, db);
-    }
+    Object.entries(data).forEach(([key, value]) => {
+      if (
+        typeof data[key] === 'object' &&
+        typeof data[key].get === 'function'
+      ) {
+        try {
+          data[key] = {
+            path: `${data[key]._path.segments[0]}/${
+              data[key]._path.segments[1]
+            }`,
+            id: data[key]._path.segments[1],
+          };
+        } catch (error) {
+          data[key] = 'Firestore Reference';
+        }
+      }
+    });
   } catch (error) {
     console.error(error);
     throw error;
@@ -51,13 +45,19 @@ export async function populateReference(data, key, path, references = {}) {
         DocumentReference: data[key],
       };
       const doc = await data[key].get();
-      data[key] = await serializeDocument(
-        doc,
-        {
-          populate: path,
-        },
-        references[key]
-      );
+      if (doc.exists) {
+        data[key] = await serializeDocument(
+          doc,
+          {
+            populate: path,
+          },
+          references[key]
+        );
+      } else {
+        console.warn(
+          `Could not populate reference '${key}' as document reference does not exist`
+        );
+      }
     } else {
       // Key is not a Firestore Document Reference or has already been populated so defer
       await populatePath(data[key], path, references[key]);
@@ -79,6 +79,39 @@ export async function populateSubcollection(data, key, paths, docRef) {
   try {
     data[key] = await getSubcollection(docRef, key);
   } catch (error) {
+    console.warn(error);
+  }
+}
+
+/**
+ * Deserialize a path
+ * @param {object} data Document data
+ * @param {string|array} paths Path to populate
+ * @param {object} db Firestore Database instance
+ */
+export function deserializePath(data, path, db) {
+  try {
+    data[path] = db.doc(data[path]);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+/**
+ * Deserialize paths
+ * @param {object} data Document data
+ * @param {string|array} paths Paths to populate
+ * @param {object} db Firestore Database instance
+ */
+export async function deserialize(data, paths, db) {
+  try {
+    if (Array.isArray(paths)) {
+      paths.forEach(path => deserializePath(data, path, db));
+    } else {
+      deserializePath(data, paths, db);
+    }
+  } catch (error) {
     console.error(error);
     throw error;
   }
@@ -97,7 +130,7 @@ export async function populatePath(data, path, references) {
 
     if (data[key]) {
       await populateReference(data, key, path, references);
-    } else {
+    } else if (references && references.DocumentReference) {
       await populateSubcollection(
         data,
         key,
@@ -150,6 +183,11 @@ export async function serializeDocument(doc, options = {}, references) {
         await populate(data, options.populate, references);
       }
 
+      // Sanitize unpopulated references
+      if (!options.keepUnpopulatedReferences) {
+        removeUnpopulatedReferences(data);
+      }
+
       return data;
     }
   } catch (error) {
@@ -166,13 +204,16 @@ export async function serializeSnapshot(snapshot, options = {}) {
   try {
     let data = [];
     if (snapshot && !snapshot.empty) {
-      data = await asyncMap(snapshot.docs, doc =>
-        serializeDocument(doc, options)
-      );
+      data = await asyncMap(snapshot.docs, doc => {
+        let references = {
+          DocumentReference: doc.ref,
+        };
+        return serializeDocument(doc, options, references);
+      });
     }
     return data;
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
@@ -190,7 +231,7 @@ export async function getDocument(docRef, options) {
     const doc = await docRef.get();
     return await serializeDocument(doc, options, references);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }
@@ -205,7 +246,7 @@ export async function getCollection(colRef, options) {
     const snapshot = await colRef.get();
     return await serializeSnapshot(snapshot, options);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     throw error;
   }
 }

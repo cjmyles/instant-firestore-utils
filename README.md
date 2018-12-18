@@ -2,6 +2,8 @@
 
 Lightweight Firebase Firestore utility library.
 
+_**Please note:** Although this package can be utilized with raw Firestore Documents and Collections, it may be easier to use the [`instant-firestore`](https://github.com/cjmyles/instant-firestore) ORM depending on your requirements._
+
 ## Table of Contents
 
 - [Installation](#installation)

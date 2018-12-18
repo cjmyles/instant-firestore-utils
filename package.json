@@ -1,6 +1,6 @@
 {
   "name": "instant-firestore-utils",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Lightweight Firebase Firestore utility library.",
   "main": "lib/index.js",
   "scripts": {
