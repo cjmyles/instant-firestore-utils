@@ -1,7 +1,7 @@
 {
   "name": "instant-firestore-utils",
   "version": "1.0.3",
-  "description": "Lightweight Firebase Firestore utility library.",
+  "description": "Lightweight Firebase Cloud Firestore utility library.",
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha --require babel-core/register --require babel-polyfill",
